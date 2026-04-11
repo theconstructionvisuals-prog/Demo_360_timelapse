@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html lang="fi">
+<head>
+  <meta charset="utf-8">
+  <title>360 Timeline Viewer</title>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+      font-family: sans-serif;
+    }
+
+    #pano {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* SIDEBAR */
+    #sidebar {
+      position: fixed;
+      top: 40px;
+      left: 40px;
+      color: white;
+      z-index: 10;
+    }
+
+    .sidebar-title {
+      font-size: 14px;
+      letter-spacing: 0.12em;
+      margin-bottom: 10px;
+      opacity: 0.85;
+    }
+
+    .sidebar-title::after {
+      content: "";
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: rgba(255,255,255,0.2);
+      margin-top: 8px;
+    }
+
+    .sidebar-list {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .item {
+      cursor: pointer;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .item.active {
+      color: white;
+    }
+
+    /* TIMELINE */
+    #timeline {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 50px;
+      z-index: 10;
+    }
+
+    #timeline .item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      margin-bottom: 6px;
+    }
+
+    .item.active .dot {
+      background: white;
+      transform: scale(1.4);
+    }
+
+    .label {
+      font-size: 12px;
+    }
+
+    /* PLAY */
+    #controls {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+    }
+
+    button {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div id="pano"></div>
+
+  <div id="sidebar">
+    <div class="sidebar-title">Construction Site Alpha</div>
+    <div class="sidebar-list" id="sidebarList"></div>
+  </div>
+
+  <div id="timeline"></div>
+
+  <div id="controls">
+    <button id="playBtn">▶ Play</button>
+  </div>
+
+  <script src="https://unpkg.com/marzipano/dist/marzipano.js"></script>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
