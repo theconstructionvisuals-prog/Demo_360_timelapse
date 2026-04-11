@@ -5,66 +5,86 @@ const view = new Marzipano.RectilinearView();
 const geometry = new Marzipano.EquirectGeometry([{ width: 8000 }]);
 
 let scenes = [];
-let currentScene = null;
 let currentIndex = 0;
+let currentScene = null;
 
-const sidebarList = document.getElementById("sidebarList");
 const timeline = document.getElementById("timeline");
-const playBtn = document.getElementById("playBtn");
+const sidebarList = document.getElementById("sidebarList");
 
-let autoplay = false;
-let interval = null;
+let leftSpacer, rightSpacer;
 
-// 🔥 LADATAAN JSON
+// LOAD
 fetch("weeks.json")
 .then(res => res.json())
 .then(data => {
 scenes = data;
-
-
 buildUI();
-initViewer();
-
-
+init();
 });
 
-// 🔥 LUO UI
+// BUILD
 function buildUI() {
+
+leftSpacer = document.createElement("div");
+rightSpacer = document.createElement("div");
+
+leftSpacer.style.flex = "0 0 auto";
+rightSpacer.style.flex = "0 0 auto";
+
+timeline.appendChild(leftSpacer);
+
 scenes.forEach((scene, index) => {
 
-
-// SIDEBAR
+// SIDEBAR ITEM
 const sideItem = document.createElement("div");
 sideItem.className = "item";
 sideItem.dataset.index = index;
 sideItem.textContent = scene.label;
 sidebarList.appendChild(sideItem);
 
-// TIMELINE
-const timeItem = document.createElement("div");
-timeItem.className = "item";
-timeItem.dataset.index = index;
+// TIMELINE ITEM
+const item = document.createElement("div");
+item.className = "item";
+item.dataset.index = index;
 
-timeItem.innerHTML = `
-  <div class="dot"></div>
-  <div class="label">${scene.label}</div>
-`;
+item.innerHTML =
+  '<div class="dot"></div>' +
+  '<div class="label">' + scene.label + '</div>';
 
-timeline.appendChild(timeItem);
-
+timeline.appendChild(item);
 
 });
+
+timeline.appendChild(rightSpacer);
 }
 
-// 🔥 INIT VIEWER
-function initViewer() {
+// INIT
+function init() {
+updateSpacers();
+
 currentScene = createScene(0);
 currentScene.switchTo();
 
 attachEvents();
+
+requestAnimationFrame(() => {
+centerItem(0);
+});
 }
 
-// 🔥 SCENE
+// SPACERS
+function updateSpacers() {
+const first = document.querySelector("#timeline .item");
+if (!first) return;
+
+const itemWidth = first.offsetWidth;
+const spacerWidth = (window.innerWidth / 2) - (itemWidth / 2);
+
+leftSpacer.style.width = spacerWidth + "px";
+rightSpacer.style.width = spacerWidth + "px";
+}
+
+// SCENE
 function createScene(index) {
 const source = Marzipano.ImageUrlSource.fromString("pano/" + scenes[index].file);
 
@@ -75,59 +95,72 @@ view
 });
 }
 
-// 🔥 NAVIGOINTI
+// NAV
 function goTo(index) {
 if (index === currentIndex) return;
 
-const newScene = createScene(index);
-newScene.switchTo();
+const scene = createScene(index);
+scene.switchTo();
 
-currentScene = newScene;
+currentScene = scene;
 currentIndex = index;
 
 updateUI(index);
+centerItem(index);
 }
 
-// 🔥 UI UPDATE
+// UI UPDATE
 function updateUI(index) {
-document.querySelectorAll(".item").forEach(i => {
-if (parseInt(i.dataset.index) === index) {
-i.classList.add("active");
-} else {
-i.classList.remove("active");
-}
+document.querySelectorAll(".item").forEach(el => {
+el.classList.toggle("active", parseInt(el.dataset.index) === index);
 });
 }
 
-// 🔥 EVENTS
+// CENTER
+function centerItem(index) {
+
+const item = document.querySelector('#timeline .item[data-index="' + index + '"]');
+if (!item) return;
+
+const target =
+item.offsetLeft - (timeline.clientWidth / 2) + (item.offsetWidth / 2);
+
+timeline.scrollTo({
+left: target,
+behavior: "smooth"
+});
+}
+
+// EVENTS
 function attachEvents() {
+
 document.querySelectorAll(".item").forEach(item => {
 item.onclick = () => {
-stopAutoplay();
 goTo(parseInt(item.dataset.index));
 };
 });
-}
 
-// 🔥 AUTOPLAY
-playBtn.onclick = () => {
-if (autoplay) {
-stopAutoplay();
-return;
-}
+// DRAG
+let isDown = false;
+let startX;
+let scrollLeft;
 
-autoplay = true;
-playBtn.textContent = "❚❚ Pause";
+timeline.addEventListener("mousedown", e => {
+isDown = true;
+startX = e.pageX;
+scrollLeft = timeline.scrollLeft;
+});
 
-interval = setInterval(() => {
-let next = currentIndex + 1;
-if (next >= scenes.length) next = 0;
-goTo(next);
-}, 5000);
-};
+timeline.addEventListener("mouseup", () => isDown = false);
+timeline.addEventListener("mouseleave", () => isDown = false);
 
-function stopAutoplay() {
-autoplay = false;
-clearInterval(interval);
-playBtn.textContent = "▶ Play";
+timeline.addEventListener("mousemove", e => {
+if (!isDown) return;
+timeline.scrollLeft = scrollLeft - (e.pageX - startX);
+});
+
+window.addEventListener("resize", () => {
+updateSpacers();
+centerItem(currentIndex);
+});
 }
