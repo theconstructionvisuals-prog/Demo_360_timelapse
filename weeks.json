@@ -2,5 +2,12 @@
 { "file": "week01.jpg", "label": "Week 01" },
 { "file": "week02.jpg", "label": "Week 02" },
 { "file": "week03.jpg", "label": "Week 03" },
-{ "file": "week04.jpg", "label": "Week 04" }
+{ "file": "week04.jpg", "label": "Week 04" },
+{ "file": "week05.jpg", "label": "Week 05" },
+{ "file": "week06.jpg", "label": "Week 06" },
+{ "file": "week07.jpg", "label": "Week 07" },
+{ "file": "week08.jpg", "label": "Week 08" },
+{ "file": "week09.jpg", "label": "Week 09" },
+{ "file": "week10.jpg", "label": "Week 10" },
+{ "file": "week11.jpg", "label": "Week 11" }
 ]
