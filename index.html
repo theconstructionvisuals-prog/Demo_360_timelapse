@@ -2,135 +2,196 @@
 
 <html lang="fi">
 <head>
-  <meta charset="utf-8">
-  <title>360 Timeline Viewer</title>
+<meta charset="utf-8">
+<title>360 Timeline Viewer</title>
 
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background: #000;
-      font-family: sans-serif;
-    }
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #000;
+  font-family: sans-serif;
+}
 
-    #pano {
-      position: fixed;
-      width: 100vw;
-      height: 100vh;
-    }
+#pano {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+}
 
-    /* SIDEBAR */
-    #sidebar {
-      position: fixed;
-      top: 40px;
-      left: 40px;
-      color: white;
-      z-index: 10;
-    }
+/* 🔥 gradient */
+#bottomFade {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 160px;
+  background: linear-gradient(to top, rgba(0,0,0,0.55), transparent);
+  pointer-events: none;
+  z-index: 5;
+}
 
-    .sidebar-title {
-      font-size: 14px;
-      letter-spacing: 0.12em;
-      margin-bottom: 10px;
-      opacity: 0.85;
-    }
+/* 🔥 SIDEBAR */
+#sidebar {
+  position: fixed;
+  top: 20px;
+  left: 8px;
+  z-index: 20;
+}
 
-    .sidebar-title::after {
-      content: "";
-      display: block;
-      width: 40px;
-      height: 1px;
-      background: rgba(255,255,255,0.2);
-      margin-top: 8px;
-    }
+/* OTSIKKO */
+.sidebar-title {
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  margin-bottom: 12px;
+  color: white;
 
-    .sidebar-list {
-      margin-top: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+  text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+  position: relative;
+}
 
-    .item {
-      cursor: pointer;
-      color: rgba(255,255,255,0.4);
-    }
+/* viiva */
+.sidebar-title::after {
+  content: "";
+  display: block;
+  width: 22px;
+  height: 1px;
+  margin-top: 8px;
+  background: rgba(255,255,255,0.25);
+}
 
-    .item.active {
-      color: white;
-    }
+/* LISTA */
+#sidebarList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* 🔥 pienempi gap */
 
-    /* TIMELINE */
-    #timeline {
-      position: fixed;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 50px;
-      z-index: 10;
-    }
+  padding: 6px 8px;
+  border-radius: 6px;
 
-    #timeline .item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  width: fit-content;
 
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.4);
-      margin-bottom: 6px;
-    }
+  background: rgba(0, 0, 0, 0.10);
+  backdrop-filter: blur(4px);
+}
 
-    .item.active .dot {
-      background: white;
-      transform: scale(1.4);
-    }
+/* ITEMIT */
+#sidebarList .item {
+  font-size: 12px;
+  padding-left: 2px; /* 🔥 lähemmäs reunaa */
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
-    .label {
-      font-size: 12px;
-    }
+#sidebarList .item:hover {
+  color: rgba(255,255,255,0.8);
+}
 
-    /* PLAY */
-    #controls {
-      position: fixed;
-      bottom: 40px;
-      right: 40px;
-    }
+#sidebarList .item.active {
+  color: white;
+}
 
-    button {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: white;
-      padding: 8px 14px;
-      cursor: pointer;
-    }
+/* TIMELINE */
+#timeline {
+  position: fixed;
+  bottom: 40px;
+  left: 0;
+  width: 100%;
 
-  </style>
+  display: flex;
+  gap: 40px;
+  overflow-x: auto;
+
+  cursor: grab;
+  z-index: 10;
+}
+
+#timeline::-webkit-scrollbar {
+  display: none;
+}
+
+/* ITEM */
+.item {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding-top: 8px;
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+}
+
+.item.active {
+  color: white;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  margin-bottom: 6px;
+
+  transform-origin: center;
+  transition: all 0.2s ease;
+}
+
+.item.active .dot {
+  background: white;
+  transform: scale(1.4) translateY(2px);
+}
+
+.label {
+  font-size: 12px;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+  #sidebar {
+    display: none;
+  }
+
+  #timeline {
+    bottom: 20px;
+    gap: 28px;
+  }
+
+  .dot {
+    width: 16px;
+    height: 16px;
+  }
+
+  .label {
+    font-size: 14px;
+  }
+
+  #bottomFade {
+    height: 140px;
+  }
+}
+</style>
 
 </head>
 
 <body>
 
-  <div id="pano"></div>
+<div id="pano"></div>
+<div id="bottomFade"></div>
 
-  <div id="sidebar">
-    <div class="sidebar-title">Construction Site Alpha</div>
-    <div class="sidebar-list" id="sidebarList"></div>
-  </div>
+<!-- SIDEBAR -->
 
-  <div id="timeline"></div>
+<div id="sidebar">
+  <div class="sidebar-title">Construction Site Alpha</div>
+  <div id="sidebarList"></div>
+</div>
 
-  <div id="controls">
-    <button id="playBtn">▶ Play</button>
-  </div>
+<div id="timeline"></div>
 
-  <script src="https://unpkg.com/marzipano/dist/marzipano.js"></script>
+<script src="https://unpkg.com/marzipano/dist/marzipano.js"></script>
 
-  <script src="app.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
