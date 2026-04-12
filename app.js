@@ -35,14 +35,12 @@ timeline.appendChild(leftSpacer);
 
 scenes.forEach((scene, index) => {
 
-// SIDEBAR ITEM
 const sideItem = document.createElement("div");
 sideItem.className = "item";
 sideItem.dataset.index = index;
 sideItem.textContent = scene.label;
 sidebarList.appendChild(sideItem);
 
-// TIMELINE ITEM
 const item = document.createElement("div");
 item.className = "item";
 item.dataset.index = index;
@@ -69,6 +67,7 @@ attachEvents();
 
 requestAnimationFrame(() => {
 centerItem(0);
+centerSidebar(0);
 });
 }
 
@@ -107,16 +106,17 @@ currentIndex = index;
 
 updateUI(index);
 centerItem(index);
+centerSidebar(index);
 }
 
-// UI UPDATE
+// UI
 function updateUI(index) {
 document.querySelectorAll(".item").forEach(el => {
 el.classList.toggle("active", parseInt(el.dataset.index) === index);
 });
 }
 
-// CENTER
+// TIMELINE CENTER
 function centerItem(index) {
 
 const item = document.querySelector('#timeline .item[data-index="' + index + '"]');
@@ -131,6 +131,21 @@ behavior: "smooth"
 });
 }
 
+// SIDEBAR CENTER
+function centerSidebar(index) {
+
+const item = document.querySelector('#sidebarList .item[data-index="' + index + '"]');
+if (!item) return;
+
+const target =
+item.offsetTop - (sidebarList.clientHeight / 2) + (item.offsetHeight / 2);
+
+sidebarList.scrollTo({
+top: target,
+behavior: "smooth"
+});
+}
+
 // EVENTS
 function attachEvents() {
 
@@ -140,7 +155,7 @@ goTo(parseInt(item.dataset.index));
 };
 });
 
-// DRAG
+// TIMELINE DRAG
 let isDown = false;
 let startX;
 let scrollLeft;
@@ -159,8 +174,28 @@ if (!isDown) return;
 timeline.scrollLeft = scrollLeft - (e.pageX - startX);
 });
 
+// 🔥 SIDEBAR DRAG
+let isDownSidebar = false;
+let startY;
+let scrollTopStart;
+
+sidebarList.addEventListener("mousedown", e => {
+isDownSidebar = true;
+startY = e.pageY;
+scrollTopStart = sidebarList.scrollTop;
+});
+
+sidebarList.addEventListener("mouseup", () => isDownSidebar = false);
+sidebarList.addEventListener("mouseleave", () => isDownSidebar = false);
+
+sidebarList.addEventListener("mousemove", e => {
+if (!isDownSidebar) return;
+sidebarList.scrollTop = scrollTopStart - (e.pageY - startY);
+});
+
 window.addEventListener("resize", () => {
 updateSpacers();
 centerItem(currentIndex);
+centerSidebar(currentIndex);
 });
 }
