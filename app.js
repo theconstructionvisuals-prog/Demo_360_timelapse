@@ -13,6 +13,27 @@ const sidebarList = document.getElementById("sidebarList");
 
 let leftSpacer, rightSpacer;
 
+/* 🔥 PRELOAD */
+const imageCache = {};
+
+function preloadImage(index) {
+if (index < 0 || index >= scenes.length) return;
+if (imageCache[index]) return;
+
+const img = new Image();
+img.src = "pano/" + scenes[index].file;
+
+imageCache[index] = img;
+}
+
+function preloadAround(index) {
+preloadImage(index);
+preloadImage(index - 1);
+preloadImage(index - 2);
+preloadImage(index + 1);
+preloadImage(index + 2);
+}
+
 // LOAD
 fetch("weeks.json")
 .then(res => res.json())
@@ -65,6 +86,8 @@ currentScene.switchTo();
 
 attachEvents();
 
+preloadAround(0); // 🔥 preload heti alussa
+
 requestAnimationFrame(() => {
 centerItem(0);
 centerSidebar(0);
@@ -107,6 +130,8 @@ currentIndex = index;
 updateUI(index);
 centerItem(index);
 centerSidebar(index);
+
+preloadAround(index); // 🔥 preload ympärille
 }
 
 // UI
@@ -174,7 +199,7 @@ if (!isDown) return;
 timeline.scrollLeft = scrollLeft - (e.pageX - startX);
 });
 
-// 🔥 SIDEBAR DRAG
+// SIDEBAR DRAG
 let isDownSidebar = false;
 let startY;
 let scrollTopStart;
