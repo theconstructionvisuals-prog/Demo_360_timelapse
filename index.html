@@ -4,8 +4,6 @@
 <head>
 <meta charset="utf-8">
 
-<!-- 🔥 mobiilifixi -->
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>360 Timeline Viewer</title>
@@ -41,7 +39,6 @@ body {
   top: 20px;
   left: 8px;
   z-index: 20;
-
   max-height: calc(100vh - 40px);
   display: flex;
   flex-direction: column;
@@ -71,20 +68,15 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
-
   padding: 6px 8px;
   border-radius: 6px;
   width: fit-content;
-
   background: rgba(0, 0, 0, 0.10);
   backdrop-filter: blur(4px);
-
   overflow-y: auto;
   max-height: calc(100vh - 100px);
-
   scrollbar-width: none;
   position: relative;
-
   cursor: grab;
 }
 
@@ -159,7 +151,6 @@ body {
   color: white;
 }
 
-/* DOT */
 .dot {
   width: 10px;
   height: 10px;
@@ -173,57 +164,25 @@ body {
   transform: scale(1.4) translateY(2px);
 }
 
-/* LABEL */
 .label {
   font-size: 12px;
 }
 
 /* TABLET */
 @media (max-width: 1100px) {
-
-  #timeline {
-    bottom: 20px;
-    gap: 28px;
-  }
-
-  .dot {
-    width: 14px;
-    height: 14px;
-  }
-
-  .label {
-    font-size: 13px;
-  }
-
-  #bottomFade {
-    height: 140px;
-  }
+  #timeline { bottom: 20px; gap: 28px; }
+  .dot { width: 14px; height: 14px; }
+  .label { font-size: 13px; }
+  #bottomFade { height: 140px; }
 }
 
-/* 🔥 MOBILE (aikaisemmin + isompi UI) */
+/* MOBILE */
 @media (max-width: 900px) {
-
-  #sidebar {
-    display: none;
-  }
-
-  #timeline {
-    bottom: 24px;
-    gap: 32px;
-  }
-
-  .dot {
-    width: 18px;
-    height: 18px;
-  }
-
-  .label {
-    font-size: 16px;
-  }
-
-  #bottomFade {
-    height: 160px;
-  }
+  #sidebar { display: none; }
+  #timeline { bottom: 24px; gap: 32px; }
+  .dot { width: 18px; height: 18px; }
+  .label { font-size: 16px; }
+  #bottomFade { height: 160px; }
 }
 </style>
 
