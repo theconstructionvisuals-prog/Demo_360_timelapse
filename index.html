@@ -57,7 +57,7 @@ body {
 /* SIDEBAR */
 #sidebar {
   position: fixed;
-  top: 80px; /* 🔥 MUUTETTU (oli 20px) */
+  top: 80px; /* 🔥 siirretty alemmas */
   left: 8px;
   z-index: 20;
   max-height: calc(100vh - 40px);
@@ -78,10 +78,10 @@ body {
 .sidebar-title::after {
   content: "";
   display: block;
-  width: 22px;
+  width: 100%; /* 🔥 koko leveys */
   height: 1px;
-  margin-top: 8px;
-  background: rgba(255,255,255,0.25);
+  margin-top: 6px;
+  background: rgba(255,255,255,0.2);
 }
 
 /* LIST */
