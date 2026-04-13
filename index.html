@@ -38,11 +38,6 @@ body {
 
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-#playBtn:hover {
-  background: rgba(0,0,0,0.55);
 }
 
 /* TIMELINE */
@@ -51,15 +46,16 @@ body {
   bottom: 40px;
   width: 100%;
   display: flex;
-  justify-content: center;
-  gap: 30px;
+  gap: 40px;
+  overflow-x: auto;
   z-index: 10;
 }
 
 .item {
-  cursor: pointer;
+  flex: 0 0 auto;
   text-align: center;
   color: rgba(255,255,255,0.5);
+  cursor: pointer;
 }
 
 .item.active {
@@ -93,118 +89,7 @@ body {
 <button id="playBtn">▶</button>
 
 <script src="https://unpkg.com/marzipano/dist/marzipano.js"></script>
-
-<script>
-
-/* =========================
-   DATA (vaihda nämä kuviin)
-========================= */
-
-const scenesData = [
-  { name: "Week 1", image: "week1.jpg" },
-  { name: "Week 2", image: "week2.jpg" },
-  { name: "Week 3", image: "week3.jpg" }
-];
-
-/* =========================
-   MARZIPANO INIT
-========================= */
-
-const viewer = new Marzipano.Viewer(document.getElementById('pano'));
-const sceneObjects = [];
-
-scenesData.forEach(data => {
-  const source = Marzipano.ImageUrlSource.fromString(data.image);
-
-  const geometry = new Marzipano.EquirectGeometry([{ width: 4000 }]);
-
-  const limiter = Marzipano.RectilinearView.limit.traditional(1024, Math.PI/2);
-  const view = new Marzipano.RectilinearView(null, limiter);
-
-  const scene = viewer.createScene({
-    source: source,
-    geometry: geometry,
-    view: view
-  });
-
-  sceneObjects.push(scene);
-});
-
-/* =========================
-   TIMELINE UI
-========================= */
-
-const timeline = document.getElementById("timeline");
-
-scenesData.forEach((scene, i) => {
-  const item = document.createElement("div");
-  item.className = "item";
-
-  item.innerHTML = `
-    <div class="dot"></div>
-    <div class="label">${scene.name}</div>
-  `;
-
-  item.onclick = () => switchScene(i);
-
-  timeline.appendChild(item);
-});
-
-/* =========================
-   SWITCH SCENE
-========================= */
-
-let currentIndex = 0;
-
-function switchScene(index) {
-  currentIndex = index;
-
-  sceneObjects[index].switchTo({
-    transitionDuration: 800
-  });
-
-  updateTimeline();
-}
-
-function updateTimeline() {
-  document.querySelectorAll(".item").forEach((el, i) => {
-    el.classList.toggle("active", i === currentIndex);
-  });
-}
-
-/* =========================
-   PLAY / PAUSE
-========================= */
-
-let playing = false;
-let interval;
-
-const btn = document.getElementById("playBtn");
-
-btn.addEventListener("click", () => {
-  playing = !playing;
-
-  if (playing) {
-    btn.innerHTML = "❚❚";
-
-    interval = setInterval(() => {
-      currentIndex = (currentIndex + 1) % sceneObjects.length;
-      switchScene(currentIndex);
-    }, 2000);
-
-  } else {
-    btn.innerHTML = "▶";
-    clearInterval(interval);
-  }
-});
-
-/* =========================
-   START
-========================= */
-
-switchScene(0);
-
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
