@@ -117,12 +117,12 @@ view
 });
 }
 
-// NAV
-function goTo(index) {
+// NAV (🔥 pieni muutos: fromAuto)
+function goTo(index, fromAuto = false) {
 if (index === currentIndex) return;
 
-/* 🔥 STOP PLAY jos käyttäjä klikkaa */
-if (playing) {
+/* 🔥 STOP vain jos EI autoplay */
+if (!fromAuto && playing) {
   playing = false;
   clearInterval(interval);
   playBtn.innerHTML = "▶";
@@ -233,7 +233,7 @@ centerSidebar(currentIndex);
 }
 
 /* =========================
-   🔥 PLAY / PAUSE (LISÄTTY)
+   🔥 PLAY / PAUSE
 ========================= */
 
 let playing = false;
@@ -254,7 +254,7 @@ if (playing) {
       next = 0;
     }
 
-    goTo(next);
+    goTo(next, true); // 🔥 tärkeä fix
 
   }, 2000);
 
