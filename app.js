@@ -117,11 +117,11 @@ view
 });
 }
 
-// NAV (🔥 pieni muutos: fromAuto)
+// NAV (🔥 fix mukana)
 function goTo(index, fromAuto = false) {
 if (index === currentIndex) return;
 
-/* 🔥 STOP vain jos EI autoplay */
+/* 🔥 STOP vain jos käyttäjä klikkaa */
 if (!fromAuto && playing) {
   playing = false;
   clearInterval(interval);
@@ -233,33 +233,40 @@ centerSidebar(currentIndex);
 }
 
 /* =========================
-   🔥 PLAY / PAUSE
+   🔥 PLAY / PAUSE (fixattu)
 ========================= */
 
 let playing = false;
 let interval = null;
+let playBtn = null;
 
-const playBtn = document.getElementById("playBtn");
+window.addEventListener("DOMContentLoaded", () => {
+
+playBtn = document.getElementById("playBtn");
 
 playBtn.addEventListener("click", () => {
-playing = !playing;
 
-if (playing) {
-  playBtn.innerHTML = "❚❚";
+  playing = !playing;
 
-  interval = setInterval(() => {
-    let next = currentIndex + 1;
+  if (playing) {
+    playBtn.innerHTML = "❚❚";
 
-    if (next >= scenes.length) {
-      next = 0;
-    }
+    interval = setInterval(() => {
+      let next = currentIndex + 1;
 
-    goTo(next, true); // 🔥 tärkeä fix
+      if (next >= scenes.length) {
+        next = 0;
+      }
 
-  }, 2000);
+      goTo(next, true);
 
-} else {
-  playBtn.innerHTML = "▶";
-  clearInterval(interval);
-}
+    }, 2000);
+
+  } else {
+    playBtn.innerHTML = "▶";
+    clearInterval(interval);
+  }
+
+});
+
 });
