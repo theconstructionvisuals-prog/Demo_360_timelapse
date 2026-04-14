@@ -260,7 +260,7 @@ playBtn.addEventListener("click", () => {
 
       goTo(next, true);
 
-    }, 2000);
+    }, 4000);
 
   } else {
     playBtn.innerHTML = "▶";
